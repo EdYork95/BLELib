@@ -6,8 +6,7 @@
 //
 
 import Foundation
-import CoreBluetoothMock
 
-struct BLELib {
-    var hello = "Hello world"
+class MyPeripheralDelegate: CBPeripheralDelegate {
+    
 }
