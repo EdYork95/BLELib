@@ -70,6 +70,7 @@ class Discoverer: CBCentralManagerDelegate {
             ],
             peripheral: peripheral
         )
+        peripheral.discoverServices(nil)
         self.connectedDevice = device
     }
     

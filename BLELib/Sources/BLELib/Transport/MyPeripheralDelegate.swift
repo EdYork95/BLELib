@@ -27,6 +27,14 @@ class MyPeripheralDelegate: BLETransportDelegate {
     private var writeCharacteristic: CBCharacteristic?
     private var notifyCharacteristic: CBCharacteristic?
     
+    func peripheral(_ peripheral: CBPeripheral, didDiscoverServices error: Error?) {
+        if let services = peripheral.services {
+            for service in services {
+                peripheral.discoverCharacteristics(nil, for: service)
+            }
+        }
+    }
+    
     func peripheral(_ peripheral: CBPeripheral, didDiscoverCharacteristicsFor service: CBService, error: Error?) {
         guard let characteristics = service.characteristics else { return }
         for characteristic in characteristics {
@@ -48,6 +56,15 @@ class MyPeripheralDelegate: BLETransportDelegate {
     
     func peripheral(_ peripheral: CBPeripheral, didUpdateValueFor characteristic: CBCharacteristic, error: Error?) {
         guard let data = characteristic.value else { return }
-        print(data)
+        notifications.send([1: data])
+    }
+    
+    func peripheral(_ peripheral: CBPeripheral, didWriteValueFor characteristic: CBCharacteristic, error: Error?) {
+        print("did write value to characteristic \(characteristic.uuid)")
+        peripheral.readValue(for: characteristic)
+    }
+    
+    func peripheralIsReady(toSendWriteWithoutResponse peripheral: CBPeripheral) {
+        print("ready")
     }
 }

@@ -63,4 +63,25 @@ public class MockDevice: CBMPeripheralSpecDelegate {
     }
 }
 
-class myDeviceCBMPeripheralSpecDelegate: CBMPeripheralSpecDelegate { }
+class myDeviceCBMPeripheralSpecDelegate: CBMPeripheralSpecDelegate {
+    
+    var responseToReturn: Data?
+    
+    func peripheral(_ peripheral: CBMPeripheralSpec, didReceiveReadRequestFor characteristic: CBMCharacteristicMock) -> Result<Data, Error> {
+        .success(responseToReturn ?? Data())
+    }
+    
+    func peripheral(_ peripheral: CBMPeripheralSpec, didReceiveWriteRequestFor characteristic: CBMCharacteristicMock, data: Data) -> Result<Void, Error> {
+        handle(write: data, peripheralSpec: peripheral)
+        return .success(())
+    }
+    
+    private func handle(write data: Data, peripheralSpec: CBMPeripheralSpec) {
+        // normally you'd have some kind of ID value / decoding to do
+        // then use a switch statement, but as currently dummy this will do
+        if data == BlinkFeature.request {
+            responseToReturn = Data([0x02])
+            peripheralSpec.simulateValueUpdate(Data([0x02]), for: .notifyCharacteristic)
+        }
+    }
+}
