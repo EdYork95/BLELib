@@ -8,6 +8,21 @@
 import Foundation
 
 /// A generic BLE device
-class Device {
+public struct Device {
     
+    public var name: String? {
+        return peripheral.name
+    }
+    
+    public var serial: String {
+        return "1234abcd"
+    }
+    
+    var features: [Feature]
+    
+    var peripheral: CBPeripheral
+    
+    public func feature<T>() -> T? {
+        return features.first { $0 is T } as? T
+    }
 }

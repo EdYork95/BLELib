@@ -6,12 +6,18 @@
 //
 
 import Foundation
+import CoreBluetoothMock
 
-class BlinkFeature: Feature {
+public class BlinkFeature: Feature {
     
     var transport: Transport
     
     init(transport: Transport) {
         self.transport = transport
+    }
+    
+    public func blink() {
+        let request = Data([0x01])
+        transport.send(data: request, for: .fakeWriteCharacteristic)
     }
 }

@@ -1,12 +1,24 @@
 import XCTest
+import Combine
 @testable import BLELib
 
 final class BLELibTests: XCTestCase {
+    
+    private var cancellable = Set<AnyCancellable>()
+    
     func testExample() {
-        // This is an example of a functional test case.
-        // Use XCTAssert and related functions to verify your tests produce the correct
-        // results.
-        XCTAssert(true)
+        let expect = expectation(description: "didConnect")
+        let mock = MockDevice.mock
+        let manager = DeviceManager(mockPeripheral: mock)
+        manager.connectedDevicePublisher.sink { device in
+            if device != nil {
+                expect.fulfill()
+            }
+        }
+        .store(in: &cancellable)
+        
+        manager.startScan()
+        wait(for: [expect], timeout: 3)
     }
 
     static var allTests = [
